@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -27,6 +28,22 @@ with app.app_context():
 @app.route("/book_appointment", methods=["POST"])
 def book_appointment():
     data = request.get_json()
+
+    # Fetch doctor info from Doctor Service
+    doctor_response = requests.get(f"http://doctor-service:5002/doctors")
+    doctor_data = doctor_response.json()
+
+    # Fetch patient info from Patient Service
+    patient_response = requests.get(f"http://patient-service:5001/patients")
+    patient_data = patient_response.json()
+
+    # Ensure doctor and patient exist before booking
+    doctor_exists = any(d["id"] == data["doctor_id"] for d in doctor_data["doctors"])
+    patient_exists = any(p["id"] == data["patient_id"] for p in patient_data["patients"])
+
+    if not doctor_exists or not patient_exists:
+        return jsonify({"error": "Invalid doctor_id or patient_id"}), 400
+
     new_appointment = Appointment(
         patient_id=data["patient_id"],
         doctor_id=data["doctor_id"],
@@ -52,17 +69,11 @@ def get_appointments():
     appointments = Appointment.query.all()
     return jsonify({
         "appointments": [
-            {
-                "id": a.id,
-                "patient_id": a.patient_id,
-                "doctor_id": a.doctor_id,
-                "date": a.date,
-                "time": a.time,
-                "status": a.status
-            }
+            {"id": a.id, "patient_id": a.patient_id, "doctor_id": a.doctor_id, "date": a.date, "time": a.time, "status": a.status}
             for a in appointments
         ]
     })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5003, debug=True)
+

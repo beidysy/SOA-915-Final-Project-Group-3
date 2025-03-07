@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  patient-service:
+    build: ./patient-service
+    ports:
+      - "5001:5001"
+    networks:
+      - hospital-network
+    volumes:
+      - patient-db:/app
+
+  doctor-service:
+    build: ./doctor-service
+    ports:
+      - "5002:5002"
+    networks:
+      - hospital-network
+    volumes:
+      - doctor-db:/app
+
+  appointment-service:
+    build: ./appointment-service
+    ports:
+      - "5003:5003"
+    networks:
+      - hospital-network
+    volumes:
+      - appointment-db:/app
+
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "5004:5004"
+    networks:
+      - hospital-network
+    volumes:
+      - notification-db:/app
+
+networks:
+  hospital-network:
+    driver: bridge
+
+volumes:
+  patient-db:
+  doctor-db:
+  appointment-db:
+  notification-db:

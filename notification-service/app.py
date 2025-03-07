@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -25,6 +26,16 @@ with app.app_context():
 @app.route("/send_notification", methods=["POST"])
 def send_notification():
     data = request.get_json()
+
+    # Fetch appointment details
+    appointment_response = requests.get(f"http://appointment-service:5003/appointments")
+    appointment_data = appointment_response.json()
+
+    # Ensure appointment exists
+    appointment_exists = any(a["id"] == data["appointment_id"] for a in appointment_data["appointments"])
+    if not appointment_exists:
+        return jsonify({"error": "Invalid appointment_id"}), 400
+
     new_notification = Notification(
         appointment_id=data["appointment_id"],
         message=f"Reminder: You have an appointment on {data['date']} at {data['time']}"
@@ -53,3 +64,4 @@ def get_notifications():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5004, debug=True)
+
