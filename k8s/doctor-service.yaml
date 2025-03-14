@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
         - name: doctor-service
-          image: doctor-service:latest
+          image: doctor-service:latest  #  Ensure it's the correct image name
+          imagePullPolicy: Never  #  Prevent Kubernetes from pulling the image
           ports:
             - containerPort: 5002
 
@@ -30,5 +31,6 @@ spec:
     - protocol: TCP
       port: 5002
       targetPort: 5002
-      nodePort: 30002  # Explicitly setting a NodePort (Range: 30000-32767)
-  type: NodePort  # Changed from ClusterIP to NodePort
+      nodePort: 30002  # Explicitly setting a NodePort
+  type: NodePort  #  Allows external access via Minikube
+

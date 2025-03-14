@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
         - name: patient-service
-          image: patient-service:latest  # Using locally built image
-          imagePullPolicy: Never        # Prevent Kubernetes from pulling from Docker Hub
+          image: patient-service:latest  # Ensure it's the correct image name
+          imagePullPolicy: Never  # Prevent Kubernetes from pulling the image
           ports:
             - containerPort: 5001
 
@@ -31,4 +31,6 @@ spec:
     - protocol: TCP
       port: 5001
       targetPort: 5001
-  type: ClusterIP
+      nodePort: 30001  #  Explicitly setting a NodePort
+  type: NodePort  #  Allows external access via Minikube
+
