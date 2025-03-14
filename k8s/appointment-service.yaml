@@ -18,10 +18,21 @@ spec:
           imagePullPolicy: Never  # Prevent Kubernetes from pulling from Docker Hub
           ports:
             - containerPort: 5003
+          envFrom:
+            - configMapRef:
+                name: app-config  # Load environment variables from ConfigMap
           env:
-            - name: FLASK_ENV
-              value: "production"
-          resources:  # Added CPU requests and limits for HPA
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
+          resources:  # Proper CPU requests/limits for HPA
             requests:
               cpu: "100m"  # Requests 0.1 CPU core
               memory: "128Mi"  # Requests 128Mi of memory
