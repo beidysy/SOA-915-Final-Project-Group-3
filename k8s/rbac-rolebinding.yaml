@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: appointment-service-rolebinding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: appointment-service-sa
+    namespace: default
+roleRef:
+  kind: Role
+  name: appointment-service-role
+  apiGroup: rbac.authorization.k8s.io

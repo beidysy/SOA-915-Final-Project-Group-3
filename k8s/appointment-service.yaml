@@ -12,6 +12,7 @@ spec:
       labels:
         app: appointment-service
     spec:
+      serviceAccountName: appointment-service-sa  # <--- MUST be inside `spec.template.spec`
       containers:
         - name: appointment-service
           image: appointment-service:latest  # Using the locally built image
