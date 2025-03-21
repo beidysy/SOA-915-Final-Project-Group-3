@@ -31,4 +31,9 @@ spec:
                   key: FLASK_ENV
             - name: SQLALCHEMY_DATABASE_URI
               value: postgresql://root:root@postgres/patient_db
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "500m"
 
