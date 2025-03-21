@@ -19,6 +19,16 @@ spec:
           ports:
             - containerPort: 5001
           env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
             - name: FLASK_APP
               valueFrom:
                 configMapKeyRef:
@@ -30,7 +40,7 @@ spec:
                   name: patient-config
                   key: FLASK_ENV
             - name: SQLALCHEMY_DATABASE_URI
-              value: postgresql://root:root@postgres/patient_db
+              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres/patient_db
           resources:
             requests:
               cpu: "100m"
