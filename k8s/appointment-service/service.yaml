@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: appointment-service
+spec:
+  type: NodePort
+  selector:
+    app: appointment-service
+  ports:
+    - port: 5003
+      targetPort: 5003
+      nodePort: 30003
+

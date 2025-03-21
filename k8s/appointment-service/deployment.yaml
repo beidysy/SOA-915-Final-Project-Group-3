@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appointment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appointment-service
+  template:
+    metadata:
+      labels:
+        app: appointment-service
+    spec:
+      containers:
+        - name: appointment-service
+          image: appointment-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5003
+          env:
+            - name: FLASK_APP
+              valueFrom:
+                configMapKeyRef:
+                  name: appointment-config
+                  key: FLASK_APP
+            - name: FLASK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: appointment-config
+                  key: FLASK_ENV
+            - name: SQLALCHEMY_DATABASE_URI
+              value: postgresql://root:root@postgres/appointment_db
+            - name: PATIENT_SERVICE_URL
+              value: http://patient-service:5001
+            - name: DOCTOR_SERVICE_URL
+              value: http://doctor-service:5002
+

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient-service
+  template:
+    metadata:
+      labels:
+        app: patient-service
+    spec:
+      containers:
+        - name: patient-service
+          image: patient-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5001
+          env:
+            - name: FLASK_APP
+              valueFrom:
+                configMapKeyRef:
+                  name: patient-config
+                  key: FLASK_APP
+            - name: FLASK_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: patient-config
+                  key: FLASK_ENV
+            - name: SQLALCHEMY_DATABASE_URI
+              value: postgresql://root:root@postgres/patient_db
+
