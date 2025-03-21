@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres  # Default DB (required)
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql  # 👈 Runs init script at startup
+
+  patient-service:
+    build: ./patient-service
+    container_name: patient-service
+    depends_on:
+      - postgres
+    environment:
+      FLASK_APP: app.py
+    ports:
+      - "5001:5001"
+
+  doctor-service:
+    build: ./doctor-service
+    container_name: doctor-service
+    depends_on:
+      - postgres
+    environment:
+      FLASK_APP: app.py
+    ports:
+      - "5002:5002"
+
+  appointment-service:
+    build: ./appointment-service
+    container_name: appointment-service
+    depends_on:
+      - postgres
+    environment:
+      FLASK_APP: app.py
+    ports:
+      - "5003:5003"
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    depends_on:
+      - postgres
+    environment:
+      FLASK_APP: app.py
+    ports:
+      - "5004:5004"
+
+volumes:
+  postgres_data:
+

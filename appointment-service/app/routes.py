@@ -12,8 +12,11 @@ def create_appointment():
     data = request.get_json()
 
     # Validate if the patient and doctor exist
-    patient_response = requests.get(f"http://127.0.0.1:5001/patients/{data['patient_id']}")
-    doctor_response = requests.get(f"http://127.0.0.1:5002/doctors/{data['doctor_id']}")
+    #patient_response = requests.get(f"http://127.0.0.1:5001/patients/{data['patient_id']}")
+    #doctor_response = requests.get(f"http://127.0.0.1:5002/doctors/{data['doctor_id']}")
+    patient_response = requests.get(f"http://patient-service:5001/patients/{data['patient_id']}")
+    doctor_response = requests.get(f"http://doctor-service:5002/doctors/{data['doctor_id']}")
+
 
     if patient_response.status_code != 200:
         return jsonify({"error": "Patient does not exist"}), 400
@@ -37,7 +40,9 @@ def create_appointment():
         "appointment_id": new_appointment.id,
         "message": f"Your appointment with Doctor {data['doctor_id']} is scheduled for {data['date']} at {data['time']}."
     }
-    requests.post("http://127.0.0.1:5004/notifications", json=notification_data)
+    #requests.post("http://127.0.0.1:5004/notifications", json=notification_data)
+    requests.post("http://notification-service:5004/notifications", json=notification_data)
+
 
     return jsonify({"message": "Appointment created successfully"}), 201
 

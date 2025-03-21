@@ -10,7 +10,8 @@ def create_notification():
     data = request.get_json()
 
     # Validate if the appointment exists
-    appointment_response = requests.get(f"http://127.0.0.1:5003/appointments/{data['appointment_id']}")
+    appointment_response = requests.get(f"http://appointment-service:5003/appointments/{data['appointment_id']}")
+
     if appointment_response.status_code != 200:
         return jsonify({"error": "Appointment does not exist"}), 400
 
@@ -28,7 +29,8 @@ def create_notification():
     patient_id = appointment_data["patient_id"]
     
     # Get patient details
-    patient_response = requests.get(f"http://127.0.0.1:5001/patients/{patient_id}")
+    patient_response = requests.get(f"http://patient-service:5001/patients/{patient_id}")
+
     if patient_response.status_code != 200:
         return jsonify({"error": "Patient not found, notification not sent"}), 400
 
@@ -48,7 +50,13 @@ def create_notification():
 def get_notifications():
     notifications = Notification.query.all()
     return jsonify([
-        {"id": n.id, "appointment_id": n.appointment_id, "message": n.message, "status": n.status, "created_at": str(n.created_at)} 
+        {
+            "id": n.id,
+            "appointment_id": n.appointment_id,
+            "message": n.message,
+            "status": n.status,
+            "created_at": str(n.created_at)
+        }
         for n in notifications
     ])
 
@@ -81,7 +89,7 @@ def delete_notification(id):
 @notification_blueprint.route("/patient/<int:patient_id>", methods=["GET"])
 def get_notifications_for_patient(patient_id):
     # Fetch all appointments for this patient
-    appointment_response = requests.get(f"http://127.0.0.1:5003/appointments")
+    appointment_response = requests.get(f"http://appointment-service:5003/appointments")
     
     if appointment_response.status_code != 200:
         return jsonify({"error": "Could not fetch appointments"}), 400
@@ -96,7 +104,13 @@ def get_notifications_for_patient(patient_id):
     notifications = Notification.query.filter(Notification.appointment_id.in_(patient_appointments)).all()
 
     return jsonify([
-        {"id": n.id, "appointment_id": n.appointment_id, "message": n.message, "status": n.status, "created_at": str(n.created_at)}
+        {
+            "id": n.id,
+            "appointment_id": n.appointment_id,
+            "message": n.message,
+            "status": n.status,
+            "created_at": str(n.created_at)
+        }
         for n in notifications
     ])
 
