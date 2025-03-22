@@ -12,6 +12,24 @@ spec:
       labels:
         app: postgres
     spec:
+      initContainers:
+        - name: init-db
+          image: postgres:16
+          command: ['sh', '-c', 'psql -U $POSTGRES_USER -f /docker-entrypoint-initdb.d/init.sql']
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: init-sql-volume
+              mountPath: /docker-entrypoint-initdb.d
       containers:
         - name: postgres
           image: postgres:16
@@ -40,4 +58,7 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
+        - name: init-sql-volume
+          configMap:
+            name: init-sql
 
