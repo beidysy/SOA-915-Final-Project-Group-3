@@ -40,7 +40,7 @@ spec:
                   name: patient-config
                   key: FLASK_ENV
             - name: SQLALCHEMY_DATABASE_URI
-              value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres/patient_db
+              value: postgresql://group3:group3pass@postgres/patient_db
           resources:
             requests:
               cpu: "100m"
