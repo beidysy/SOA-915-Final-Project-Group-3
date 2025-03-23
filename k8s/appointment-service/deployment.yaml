@@ -19,18 +19,18 @@ spec:
           ports:
             - containerPort: 5003
           env:
-            - name: FLASK_APP
+            - name: POSTGRES_USER
               valueFrom:
-                configMapKeyRef:
-                  name: appointment-config
-                  key: FLASK_APP
-            - name: FLASK_ENV
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: appointment-config
-                  key: FLASK_ENV
-            - name: SQLALCHEMY_DATABASE_URI
-              value: postgresql://root:root@postgres/appointment_db
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+
+
             - name: PATIENT_SERVICE_URL
               value: http://patient-service:5001
             - name: DOCTOR_SERVICE_URL
