@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: group3
+          POSTGRES_PASSWORD: group3pass
+          POSTGRES_DB: appointment_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r appointment-service/requirements.txt
+
+      - name: Run Unit Tests
+        working-directory: ./appointment-service
+        run: |
+          pytest tests
+
+      - name: Build Docker image
+        run: |
+          docker build -t appointment-service:latest ./appointment-service
+
+      # OPTIONAL: Push to DockerHub (if you want)
+      # - name: Log in to DockerHub
+      #   run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # - name: Push Docker image
+      #   run: docker tag appointment-service:latest yourdockerhub/appointment-service:latest && docker push yourdockerhub/appointment-service:latest
+
+      # 👇 Add deployment to Minikube separately since GitHub Actions doesn't deploy to local environments
