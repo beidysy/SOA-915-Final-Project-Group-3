@@ -16,7 +16,7 @@ jobs:
         env:
           POSTGRES_USER: group3
           POSTGRES_PASSWORD: group3pass
-          POSTGRES_DB: test_db
+          POSTGRES_DB: appointment_db
         ports:
           - 5432:5432
         options: >-
@@ -24,9 +24,6 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-
-    env:
-      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - name: Checkout code
@@ -37,7 +34,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      # 🔽 Microservices Loop
+      - name: Install root dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pytest requests-mock
+
       - name: Run tests and build for all services
         run: |
           SERVICES=("patient-service" "doctor-service" "appointment-service" "notification-service")
@@ -46,10 +47,9 @@ jobs:
             echo "🔧 Processing $SERVICE"
 
             pip install -r $SERVICE/requirements.txt
-            pip install pytest requests-mock
 
             echo "▶️ Running tests for $SERVICE"
-            pytest $SERVICE/tests --maxfail=3 --disable-warnings -v
+            PYTHONPATH=$SERVICE pytest $SERVICE/tests --maxfail=3 --disable-warnings -v
 
             echo "🐳 Building Docker image for $SERVICE"
             docker build -t $SERVICE:latest ./$SERVICE
