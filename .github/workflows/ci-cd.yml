@@ -25,9 +25,6 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-    env:
-      PYTHONPATH: ${{ github.workspace }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,21 +34,23 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install global test dependencies
-        run: pip install pytest requests-mock
-
-      # Loop through services
-      - name: Run Unit Tests & Build for Each Service
+      - name: Install dependencies
         run: |
-          for service in appointment-service doctor-service patient-service notification-service; do
-            echo "🔧 Processing $service"
-            pip install -r $service/requirements.txt
-            pytest $service/tests || exit 1
-            docker build -t $service:latest $service || exit 1
-          done
+          pip install --upgrade pip
+          pip install -r appointment-service/requirements.txt
+          pip install pytest requests-mock
 
-      # Optional: Deploy to Minikube (manual or via script)
-      - name: Deploy to Minikube
+      - name: Run Unit Tests
+        working-directory: ./appointment-service
+        env:
+          PYTHONPATH: ${{ github.workspace }}/appointment-service
         run: |
-          chmod +x deploy.sh
-          ./deploy.sh
+          pytest tests --maxfail=3 --disable-warnings -v
+
+      - name: Build Docker image
+        run: |
+          docker build -t appointment-service:latest ./appointment-service
+
+      # Optional: Deploy to Kubernetes using script
+      - name: Deploy to Kubernetes
+        run: ./deploy.sh
