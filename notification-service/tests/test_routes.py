@@ -41,5 +41,3 @@ def test_create_notification(test_client):
 
         assert response.status_code == 201
         assert response.json["message"] == "Notification sent successfully"
-
-

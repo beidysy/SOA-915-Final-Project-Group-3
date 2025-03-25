@@ -29,7 +29,13 @@ def create_notification():
     patient_id = appointment_data["patient_id"]
     
     # Get patient details
-    patient_response = requests.get(f"http://patient-service:5001/patients/{patient_id}")
+    # Get patient details using RBAC header
+    headers = {"X-Patient-ID": str(patient_id)}
+    patient_response = requests.get(
+        f"http://patient-service:5001/patients/{patient_id}",
+        headers=headers
+    )
+
 
     if patient_response.status_code != 200:
         return jsonify({"error": "Patient not found, notification not sent"}), 400
