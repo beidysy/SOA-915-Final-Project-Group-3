@@ -139,3 +139,4 @@ Password: prom-operator
 
 rate({container="appointment-service"}[1m])
 
+# Triggering pipeline
