@@ -1,0 +1,130 @@
+                                                                     Group 3 - Live Demo Presentation
+Task 0: minikube setup (30 sec)
+   -- Start minikube --
+minikube start
+   -- Check minikube ip -- 
+minikube ip
+
+                     Task 1: Check Kubernetes Resources (30 sec)
+kubectl get pods
+kubectl get svc
+
+
+
+                     Task 2: Patient Service (30001) – RBAC Demo (1.5 mins) 
+   -- Create Patient--
+curl -X POST "http://192.168.49.2:30001/patients" \
+-H "Content-Type: application/json" \
+-d '{"name":"Joddhn Doe","age":30,"email":"jodwhn@example.com","phone":"1233367890"}'
+
+-- Get all patient, and grab the patient ID --  Patient ID: 30 ************************************
+curl http://192.168.49.2:30001/patients
+
+--  Get without Header (Access Denied) --
+curl http://192.168.49.2:30001/patients/XXX
+
+-- Get with RBAC Header -- 
+curl -H "X-Patient-ID: XXX" http://192.168.49.2:30001/patients/XXX
+
+
+
+
+
+
+
+                   Task 3: Doctor Service (30002) (1 min)
+-- Create Doctor--
+curl -X POST "http://192.168.49.2:30002/doctors" -H "Content-Type: application/json" -d '{"name":"Dr. Smiith","specialty":"Dermatology","email":"smiith@example.com","phone":"9876943210"}' 
+-- Get All Doctor and Grab ID -- Doctor ID:  18 ****************************************
+curl http://192.168.49.2:30002/doctors
+
+
+
+
+                 
+                 
+                 Task 4: Appointment Service (30003) (1 min)
+     -- Book Appointment -- Using Patient ID and Doctor ID
+curl -X POST "http://192.168.49.2:30003/appointments" \
+-H "Content-Type: application/json" \
+-H "X-Patient-ID: 30" \
+-d '{
+    "patient_id": XXXX,
+    "doctor_id": XXXXXX,
+    "date": "2025-07-08",
+    "time": "10:30 AM",
+    "status": "Scheduled"
+}'
+
+-- Show Appointment -- 
+curl http://192.168.49.2:30003/appointments
+
+
+
+
+
+
+
+                    Task 5: Notification Service (30004) (30 sec)
+-- Show notification for one patient --
+curl http://192.168.49.2:30004/notifications/patient/XXXXX
+-- Show All notification -- 
+curl http://192.168.49.2:30004/notifications
+
+
+
+
+
+                         Task 6: Show HPA
+kubectl get hpa
+
+
+
+
+                        Task 7: Pipeline 
+cd Desktop/hospital-appointment-system/
+echo "# Triggering pipeline" >> README.md
+git add README.md
+git commit -m "Trigger pipeline"
+git push origin main
+./deploy.sh
+
+check the result here: https://github.com/beidysy/SOA-915-Final-Project-Group-3/actions
+
+
+
+
+
+                       Task8: Monitoring with Grafana and loki
+kubectl port-forward -n monitoring svc/prometheus-stack-grafana 3000:80
+http://localhost:3000
+login: admin
+password1: prom-operator
+password: cxnSaXYBvxrnQMmQxY4v0Of9BWTA9IdwTKcDblXh
+
+
+
+
+
+
+
+Optional:testing
+                           Task 9: Unit testing for patient
+cd Desktop/hospital-appointment-system/patient-service/
+source venv/bin/activate
+export PYTHONPATH=.
+pytest
+
+
+
+                          Task 10: integration testing 
+cd /home/ahmadou/Desktop/hospital-appointment-system/tests/integration
+pytest
+
+                   Task 11: end to tend testing
+cd /home/ahmadou/Desktop/hospital-appointment-system/tests/e2e
+pytest
+
+
+Closing
+Thank you teacher #Group3
