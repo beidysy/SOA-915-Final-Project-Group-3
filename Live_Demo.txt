@@ -1,17 +1,19 @@
                                                                      Group 3 - Live Demo Presentation
-Task 0: minikube setup (30 sec)
+			Task 0: minikube setup (30 sec)
    -- Start minikube --
 minikube start
    -- Check minikube ip -- 
 minikube ip
 
-                     Task 1: Check Kubernetes Resources (30 sec)
+
+
+			Task 1: Check Kubernetes Resources (30 sec)
 kubectl get pods
 kubectl get svc
 
 
 
-                     Task 2: Patient Service (30001) – RBAC Demo (1.5 mins) 
+			Task 2: Patient Service (30001) – RBAC Demo (1.5 mins) 
    -- Create Patient--
 curl -X POST "http://192.168.49.2:30001/patients" \
 -H "Content-Type: application/json" \
@@ -28,11 +30,7 @@ curl -H "X-Patient-ID: XXX" http://192.168.49.2:30001/patients/XXX
 
 
 
-
-
-
-
-                   Task 3: Doctor Service (30002) (1 min)
+			Task 3: Doctor Service (30002) (1 min)
 -- Create Doctor--
 curl -X POST "http://192.168.49.2:30002/doctors" -H "Content-Type: application/json" -d '{"name":"Dr. Smiith","specialty":"Dermatology","email":"smiith@example.com","phone":"9876943210"}' 
 -- Get All Doctor and Grab ID -- Doctor ID:  18 ****************************************
@@ -40,10 +38,7 @@ curl http://192.168.49.2:30002/doctors
 
 
 
-
-                 
-                 
-                 Task 4: Appointment Service (30003) (1 min)
+			Task 4: Appointment Service (30003) (1 min)
      -- Book Appointment -- Using Patient ID and Doctor ID
 curl -X POST "http://192.168.49.2:30003/appointments" \
 -H "Content-Type: application/json" \
@@ -61,11 +56,7 @@ curl http://192.168.49.2:30003/appointments
 
 
 
-
-
-
-
-                    Task 5: Notification Service (30004) (30 sec)
+			Task 5: Notification Service (30004) (30 sec)
 -- Show notification for one patient --
 curl http://192.168.49.2:30004/notifications/patient/XXXXX
 -- Show All notification -- 
@@ -73,15 +64,12 @@ curl http://192.168.49.2:30004/notifications
 
 
 
-
-
-                         Task 6: Show HPA
+			Task 6: Show HPA
 kubectl get hpa
 
 
 
-
-                        Task 7: Pipeline 
+			Task 7: Pipeline 
 cd Desktop/hospital-appointment-system/
 echo "# Triggering pipeline" >> README.md
 git add README.md
@@ -93,9 +81,7 @@ check the result here: https://github.com/beidysy/SOA-915-Final-Project-Group-3/
 
 
 
-
-
-                       Task8: Monitoring with Grafana and loki
+			Task8: Monitoring with Grafana and loki
 kubectl port-forward -n monitoring svc/prometheus-stack-grafana 3000:80
 http://localhost:3000
 login: admin
@@ -115,13 +101,11 @@ source venv/bin/activate
 export PYTHONPATH=.
 pytest
 
-
-
-                          Task 10: integration testing 
+			Task 10: integration testing 
 cd /home/ahmadou/Desktop/hospital-appointment-system/tests/integration
 pytest
 
-                   Task 11: end to tend testing
+			Task 11: end to tend testing
 cd /home/ahmadou/Desktop/hospital-appointment-system/tests/e2e
 pytest
 
