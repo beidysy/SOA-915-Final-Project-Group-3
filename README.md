@@ -143,3 +143,4 @@ rate({container="appointment-service"}[1m])
 # Triggering pipeline
 # Triggering pipeline
 # Triggering pipeline
+# Triggering pipeline
