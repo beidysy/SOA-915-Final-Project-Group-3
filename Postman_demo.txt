@@ -1,0 +1,143 @@
+Group 3 - Live Demo Presentation
+			Task 0: minikube setup (30 sec) -- Ahmadou
+   -- Start minikube --
+minikube start
+   -- Check minikube ip -- 
+minikube ip
+
+
+
+			Task 1: Check Kubernetes Resources (30 sec) -- Ahmadou
+kubectl get pods
+kubectl get svc
+
+
+
+			Task 2: Patient Service (30001) – RBAC Demo (1.5 mins) -- Ahmadou
+   -- Create Patient--
+Create Patient (POST)
+•	Method: POST
+•	URL: http://192.168.49.2:30001/patients
+•	Headers: Content-Type: application/json
+•	Body (raw JSON):
+{
+  "name": "Hinduja Thi",
+  "age": 30,
+  "email": "HindujaThi@seneca.ca",
+  "phone": "1233367890"
+}
+-- Get all patient, and grab the patient ID --  Patient ID: XXXXX************************************
+Get All Patients (GET)
+Method: GET
+URL: http://192.168.49.2:30001/patients/XXX
+
+-- Get with RBAC Header -- 
+Get Patient (Authorized)
+•	Method: GET
+•	URL: http://192.168.49.2:30001/patients/30
+•	Headers: X-Patient-ID: 30
+
+
+
+			Task 3: Doctor Service (30002) (1 min) -- Hinduja
+-- Create Doctor--
+Create Doctor
+•	Method: POST
+•	URL: http://192.168.49.2:30002/doctors
+•	Headers: Content-Type: application/json
+•	Body:
+{
+  "name": "Dr. John",
+  "specialty": "Dermatology",
+  "email": "john@seneca.ca",
+  "phone": "9879443210"
+}
+-- Get All Doctor and Grab ID -- Doctor ID:  XXXXX ****************************************
+Get All Doctors
+•	Method: GET
+•	URL: http://192.168.49.2:30002/doctors
+
+
+
+			Task 4: Appointment Service (30003) (1 min) -- Hinduja
+     -- Book Appointment -- Using Patient ID and Doctor ID
+Book Appointment
+•	Method: POST
+•	URL: http://192.168.49.2:30003/appointments
+•	Headers:
+o	Content-Type: application/json
+o	X-Patient-ID: 30
+•	Body:
+{
+  "patient_id": 30,
+  "doctor_id": 18,
+  "date": "2025-07-08",
+  "time": "10:30 AM",
+  "status": "Scheduled"
+}
+-- Show Appointment -- 
+Get All Appointments
+•	Method: GET
+•	URL: http://192.168.49.2:30003/appointments
+
+
+
+			Task 5: Notification Service (30004) (30 sec) -- Yen
+-- Show notification for one patient --
+Get Notifications for a Patient
+•	Method: GET
+•	URL: http://192.168.49.2:30004/notifications/patient/30
+-- Show All notification -- 
+curl http://192.168.49.2:30004/notifications
+
+
+
+			Task 6: Show HPA -- Yen
+kubectl get hpa
+
+
+
+			Task 7: Pipeline -- John
+cd Desktop/hospital-appointment-system/
+echo "# Triggering pipeline" >> README.md
+git add README.md
+git commit -m "Trigger pipeline"
+git push origin main
+./deploy.sh
+
+check the result here: https://github.com/beidysy/SOA-915-Final-Project-Group-3/actions
+
+
+
+			Task8: Monitoring with Grafana and loki -- John
+kubectl port-forward -n monitoring svc/prometheus-stack-grafana 3000:80
+http://localhost:3000
+login: admin
+password1: prom-operator
+password: cxnSaXYBvxrnQMmQxY4v0Of9BWTA9IdwTKcDblXh
+
+
+
+
+
+
+
+Optional:testing
+                           Task 9: Unit testing for patient -- John
+cd Desktop/hospital-appointment-system/patient-service/
+source venv/bin/activate
+export PYTHONPATH=.
+pytest
+
+			Task 10: integration testing -- John
+cd /home/ahmadou/Desktop/hospital-appointment-system/tests/integration
+pytest
+
+			Task 11: end to tend testing -- John
+cd /home/ahmadou/Desktop/hospital-appointment-system/tests/e2e
+pytest
+
+
+Closing
+Thank you teacher #Group3
+
