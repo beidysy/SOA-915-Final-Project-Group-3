@@ -80,3 +80,105 @@ This system allows patients to book appointments with doctors. When appointments
 ```bash
 git clone https://github.com/beidysy/SOA-915-Final-Project-Group-3.git
 cd SOA-915-Final-Project-Group-3
+
+```
+### Microservice Structure
+Each microservice follows the same structure:
+
+├── app.py             # Flask app entry point  
+├── models.py          # SQLAlchemy models  
+├── routes.py          # API routes  
+├── config.py          # Environment configuration  
+├── requirements.txt   # Python dependencies  
+├── Dockerfile         # Docker image configuration  
+
+### Deployment
+Start Minikube
+
+```bash
+minikube start --cpus=4 --memory=8192
+eval $(minikube docker-env)
+```
+
+Build Docker Images
+```bash
+docker build -t patient-service:latest ./patient-service
+docker build -t doctor-service:latest ./doctor-service
+docker build -t appointment-service:latest ./appointment-service
+docker build -t notification-service:latest ./notification-service
+
+```
+
+Load Images into Minikube
+```bash
+minikube image load patient-service:latest
+minikube image load doctor-service:latest
+minikube image load appointment-service:latest
+minikube image load notification-service:latest
+```
+
+Deploy Services to Kubernetes
+```bash
+kubectl apply -f k8s/postgres/
+kubectl apply -f k8s/patient-service/
+kubectl apply -f k8s/doctor-service/
+kubectl apply -f k8s/appointment-service/
+kubectl apply -f k8s/notification-service/
+
+```
+### Monitoring & Logging
+Deploy Monitoring Stack (Prometheus + Grafana)
+```bash
+kubectl create namespace monitoring
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/kube-prometheus-stack -n monitoring
+
+```
+
+Deploy Logging Stack (Loki + Promtail)
+```bash
+kubectl create namespace logging
+helm repo add grafana https://grafana.github.io/helm-charts
+helm install loki grafana/loki-stack -n logging --set grafana.enabled=true --set promtail.enabled=true
+
+```
+
+Access Grafana Dashboard
+```bash
+kubectl port-forward svc/loki-grafana -n logging 3000:80
+
+```
+
+Open your browser and visit:
+http://localhost:3000
+Login credentials:
+
+Username: admin
+
+Password: prom-operator
+Example Loki Query
+rate({container="appointment-service"}[1m])
+
+
+### CI/CD
+This project uses GitHub Actions to automate testing, image builds, and deployment.
+
+Trigger Events
+Push to main branch
+
+Pull request to main branch
+
+Workflow Overview
+Check out source code
+
+Run unit tests with pytest
+
+Build Docker images for each microservice
+
+Deploy to Minikube using deploy.sh
+
+The workflow is defined in:
+```bash
+.github/workflows/main.yml
+
+```
