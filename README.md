@@ -33,7 +33,10 @@ This system allows patients to book appointments with doctors. When appointments
 - JWT-based access control  
 - Kubernetes for orchestration  
 - Monitoring: Prometheus + Grafana  
-- Logging: Loki + Promtail  
+- Logging: Loki + Promtail
+
+
+![Architecture](architecture.png)
 
 ---
 
