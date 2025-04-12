@@ -63,7 +63,7 @@ The system allows patients to book appointments with doctors. Notifications are 
 
 ```bash
 git clone https://github.com/beidysy/SOA-915-Final-Project-Group-3/
-
+```
 Start Minikube
 minikube start --cpus=4 --memory=8192
 
@@ -99,7 +99,7 @@ kubectl apply -f k8s/doctor-service/
 kubectl apply -f k8s/appointment-service/
 kubectl apply -f k8s/notification-service/
 
-Microservices
+### Microservices
 Each microservice follows the same structure:
 
 app.py: Main entry point
