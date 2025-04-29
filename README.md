@@ -1,4 +1,4 @@
-# SOA-915 Final Project – Group 3  
+# SOA-915 Final Project 
 ## Hospital Appointment System
 
 A containerized, microservices-based Hospital Appointment System built with Flask and PostgreSQL. Deployed on Kubernetes (Minikube) with integrated monitoring and logging using Prometheus, Grafana, and Loki.
